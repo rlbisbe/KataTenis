@@ -1,112 +1,97 @@
-﻿using System;
+﻿using KataTenis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using KataTenis;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace KataTest
 {
-
     [TestClass]
     public class TestGame
     {
-        Player p1;
-        Player p2;
-        Game g;
-        [TestInitialize]
-        public void InitializeTest()
+
+        private void CheckScores(int player1, int player2, Game game)
         {
-            p1 = new Player();
-            p2 = new Player();
-            g = new Game(p1, p2);
+            Assert.AreEqual(player1, game.player1score);
+            Assert.AreEqual(player2, game.player2score);
         }
 
         [TestMethod]
-        public void TestInitialGame()
+        public void AGameShouldStartWithZero()
         {
-            Assert.AreEqual("0", p1.GetScore());
-            Assert.AreEqual("0", p2.GetScore());
+            Game game = new Game();
+            CheckScores(0, 0, game);
         }
 
         [TestMethod]
-        public void FirstPlay()
+        public void WhenAPlayerScoresPlayerScoreShouldBeIncreased()
         {
-            p1.Score();
-            Assert.AreEqual("15", p1.GetScore());
+            Game game = new Game();
+            game.Score(Game.PLAYER1);
+            CheckScores(15, 0, game);
         }
 
         [TestMethod]
-        public void TwoPlays()
+        public void WhenTwoPlayersScoreTheyShouldBothHave15()
         {
-            p1.Score();
-            p2.Score();
-            p1.Score();
-            Assert.AreEqual("30", p1.GetScore());
-            Assert.AreEqual("15", p2.GetScore());
+            Game game = new Game();
+            game.Score(Game.PLAYER1, Game.PLAYER2);
+            CheckScores(15, 15, game);
         }
 
         [TestMethod]
-        public void WinnerPlayer()
+        public void WhenAPlayerScoresTwiceItGets30()
         {
-            p1.Score();
-            p1.Score();
-            p1.Score();
-            p1.Score();
-            Assert.AreEqual(p1, g.GetWinner());
+            Game game = new Game();
+            game.Score( Game.PLAYER1, Game.PLAYER1 );
+            CheckScores(30, 0, game);
         }
 
         [TestMethod]
-        public void Equals()
+        public void WhenTheOtherPlayerScoresTwiceItGets30()
         {
-            p1.Score();
-            p1.Score();
-            p1.Score();
-            p2.Score();
-            p2.Score();
-            p2.Score();
-            Assert.AreEqual("Deuce", p1.GetScore());
-            Assert.AreEqual("Deuce", p2.GetScore());
+            Game game = new Game();
+            game.Score(Game.PLAYER2, Game.PLAYER2);
+            CheckScores(0, 30, game);
         }
 
         [TestMethod]
-        public void Advantage()
+        public void WhenAPlayerScores3TimesHeWouldGet40()
         {
-            p1.Score();
-            p1.Score();
-            p1.Score();
-            p2.Score();
-            p2.Score();
-            p2.Score();
-            p1.Score();
-            Assert.AreEqual("Advantage", p1.GetScore());
-            Assert.AreEqual("40", p2.GetScore()); 
+            Game game = new Game();
+            game.Score(Game.PLAYER1, Game.PLAYER1, Game.PLAYER1);
+            CheckScores(40, 0, game);
         }
 
         [TestMethod]
-        public void WinFromAdvantage()
+        public void WhenAPlayerScores4TimesHeWillWin()
         {
-            p1.Score();
-            p1.Score();
-            p1.Score();
-            p2.Score();
-            p2.Score();
-            p2.Score();
-            p1.Score();
-            p1.Score();
-            Assert.AreEqual(p1, g.GetWinner());
+            Game game = new Game();
+            game.Score(Game.PLAYER1, Game.PLAYER1, Game.PLAYER1, Game.PLAYER1);
+            Assert.AreEqual(Game.PLAYER1, game.GetWinner());
         }
 
         [TestMethod]
-        public void DeuceFromAdvantage()
+        public void WhenTheOtherPlayerScores4TimesHeWillWin()
         {
-            p1.Score();
-            p1.Score();
-            p1.Score();
-            p2.Score();
-            p2.Score();
-            p2.Score();
-            p1.Score();
-            p2.Score();
-            Assert.AreEqual("Deuce", p1.GetScore());
-            Assert.AreEqual("Deuce", p2.GetScore());
+            Game game = new Game();
+            game.Score(Game.PLAYER2, Game.PLAYER2, Game.PLAYER2, Game.PLAYER2);
+            Assert.AreEqual(Game.PLAYER2, game.GetWinner());
         }
+
+        //[TestMethod]
+        //public void WhenBothPlayersScore3TimesTheyWillBeDeuce()
+        //{
+        //    Game game = new Game();
+        //    game.Score(
+        //        Game.PLAYER1,
+        //        Game.PLAYER2,
+        //        Game.PLAYER1,
+        //        Game.PLAYER2,
+        //        Game.PLAYER1,
+        //        Game.PLAYER2);
+        //}
     }
 }

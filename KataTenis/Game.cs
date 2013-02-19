@@ -8,73 +8,81 @@ namespace KataTenis
 {
     public class Game
     {
-        private string[] Scores = new string[] { "0", "15", "30", "40", "Deuce", "Advantage" };
-        private Player p1;
-        private Player p2;
-        private Player winner;
+        public static int PLAYER1 = 0;
+        public static int PLAYER2 = 1;
+        public static int NOTFINISHED = 3;
+        
+        public int player1score;
+        public int player2score;
 
-        public Game(Player p1, Player p2)
+        public void Score(params int[] plays)
         {
-            if (p1 == null || p2 == null)
+            for (int i = 0; i < plays.Length; i++)
             {
-                throw new Exception("2 player are required");
+                if (plays[i] == 0)
+                {
+                    ScorePlayerOne();
+                    continue;
+                }
+                ScorePlayerTwo();
             }
-            this.p1 = p1;
-            p1.Game = this;
-            this.p2 = p2;
-            p2.Game = this;
         }
 
-        public void Score(Player p)
+        private void ScorePlayerOne()
         {
-            int i = Array.IndexOf(Scores, p.Points);
-            if (i == 2)
+            if (player1score == 15)
             {
-                Player opponent = GetOpponent(p);
-                if (opponent.Points == "40")
-                {
-                    opponent.Points = "Deuce";
-                    p.Points = "Deuce";
-                    return;
-                }
-            }
-            if (i == 3 || i == 5)
-            {
-                Player opponent = GetOpponent(p);
-                if (opponent.Points == "Advantage")
-                {
-                    opponent.Points = "Deuce";
-                    p.Points = "Deuce";
-                    return;
-                }
-                winner = p;
+                player1score = 30;
                 return;
             }
-            if (i == 4)
+            if (player1score == 30)
             {
-                Player opponent = GetOpponent(p);
-                if (opponent.Points == "Deuce")
-                {
-                    opponent.Points = "40";
-                    p.Points = "Advantage";
-                    return;
-                }
+                player1score = 40;
+                return;
             }
-            p.Points = Scores[++i];
+            if (player1score == 40)
+            {
+                player1score = 50;
+                return;
+            }
+
+            player1score = 15;
+
         }
 
-        private Player GetOpponent(Player p)
+        private void ScorePlayerTwo()
         {
-            if (p == p1)
+            if (player2score == 15)
             {
-                return p2;
+                player2score = 30;
+                return;
             }
-            return p1;
+            if (player2score == 30)
+            {
+                player2score = 40;
+                return;
+            }
+            if (player2score == 40)
+            {
+                player2score = 50;
+                return;
+            }
+
+            player2score = 15;
         }
 
         public object GetWinner()
         {
-            return winner;
+            if (player1score == 50)
+            {
+                return PLAYER1;
+            }
+            if (player2score == 50)
+            {
+                return PLAYER2;  
+            }
+            return NOTFINISHED;
         }
+
     }
 }
